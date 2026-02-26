@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Gửi em ❤️</title>
+  <style>
+    html,body{height:100%;margin:0}
+    body{
+      display:flex;align-items:center;justify-content:center;
+      background: radial-gradient(circle at 30% 20%, #ffe6ee, #fff);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      overflow:hidden;
+    }
+    .wrap{text-align:center;user-select:none}
+    .hint{opacity:.7;margin-top:14px}
+    .heart{
+      width:140px;height:140px; position:relative;
+      transform: rotate(-45deg);
+      background:#ff2d55;
+      border-radius:16px;
+      cursor:pointer;
+      box-shadow:0 18px 40px rgba(255,45,85,.25);
+      transition: transform .2s ease;
+    }
+    .heart:before,.heart:after{
+      content:""; position:absolute; width:140px;height:140px;
+      background:#ff2d55; border-radius:50%;
+    }
+    .heart:before{ top:-70px; left:0; }
+    .heart:after{ left:70px; top:0; }
+
+    /* trạng thái “nở” */
+    .pop .heart{
+      animation: pop 700ms cubic-bezier(.2,.9,.2,1) forwards;
+    }
+    @keyframes pop{
+      0%   { transform: rotate(-45deg) scale(1); }
+      40%  { transform: rotate(-45deg) scale(1.35); }
+      70%  { transform: rotate(-45deg) scale(1.15); }
+      100% { transform: rotate(-45deg) scale(1.25); }
+    }
+
+    /* tim bay */
+    .float{
+      position:absolute;
+      font-size:22px;
+      animation: floatUp 1200ms ease-out forwards;
+      pointer-events:none;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,.15));
+    }
+    @keyframes floatUp{
+      from{ transform: translateY(0) scale(1); opacity:1; }
+      to{ transform: translateY(-120px) scale(1.6); opacity:0; }
+    }
+
+    .msg{
+      margin-top:22px;
+      font-size:18px;
+      line-height:1.35;
+    }
+    .name{font-weight:700}
+  </style>
+</head>
+<body>
+  <div class="wrap" id="wrap">
+    <div class="heart" id="heart" aria-label="bấm để tim nở"></div>
+    <div class="msg">Bấm vào trái tim đi <span class="name">bé</span> ❤️</div>
+    <div class="hint">(mỗi lần bấm, tim sẽ “nở” và bay lên)</div>
+  </div>
+
+  <script>
+    const wrap = document.getElementById('wrap');
+    const heart = document.getElementById('heart');
+
+    function spawnFloatHeart(x, y){
+      const el = document.createElement('div');
+      el.className = 'float';
+      el.textContent = '❤️';
+      el.style.left = (x + (Math.random()*40-20)) + 'px';
+      el.style.top  = (y + (Math.random()*20-10)) + 'px';
+      document.body.appendChild(el);
+      el.addEventListener('animationend', () => el.remove());
+    }
+
+    heart.addEventListener('click', (e) => {
+      wrap.classList.remove('pop');
+      void wrap.offsetWidth; // restart animation
+      wrap.classList.add('pop');
+
+      const rect = heart.getBoundingClientRect();
+      const cx = rect.left + rect.width/2;
+      const cy = rect.top  + rect.height/2;
+
+      for(let i=0;i<10;i++){
+        setTimeout(() => spawnFloatHeart(cx, cy), i*35);
+      }
+    });
+  </script>
+</body>
+</html>
